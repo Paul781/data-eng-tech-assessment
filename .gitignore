@@ -9,3 +9,4 @@ source-data/*.csv
 source-data/*.xls
 source-data/*.xlsx
 wip/
+.idea/
