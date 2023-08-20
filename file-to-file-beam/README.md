@@ -1,8 +1,8 @@
-###Dependencies on Mac:
+### Dependencies on Mac:
 * Maven (`brew install maven`)
 * Java 15
 
-###Command Detail:
+### Command Detail:
 * Check output
     * `cat tmp/output*`
 * Run unit test by maven
@@ -20,7 +20,7 @@
 
 
 
-###Note:
+### Note:
 - Split large JSON files into smaller chunks for efficient parallel processing.
   - chunk your JSON data into smaller files. Once chunked, you can then read each file in parallel with Beam by wildcard file pattern and flinkRunner. The Runner determines how to distribute the reading of these files across workers. If you're using a distributed runner and have multiple files, each worker can read a different file in parallel.
   - If the file is split into multiple parts (which is the case in distributed storage like GCS, S3, etc.), Beam will process the parts in parallel.
@@ -47,7 +47,7 @@
 
 - `JsonToRow` transform can not deal with the JSON Array with "[" and "]" in the beginning and end
 
-###Limitations:
+### Limitations:
 - The data in output file should have the same order as the input file (counts-per-hour file)?
 - The format of output file does not matter? must be Json file?
 - If the json string in the input file does not in the single line like multiple lines, how to handle it?
