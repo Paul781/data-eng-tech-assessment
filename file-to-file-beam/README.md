@@ -9,10 +9,10 @@
   * `make test`
 * Create jar file
   * `make jar`
-* Run beam App by direct runner. This main class will use side input.
+* Run beam App by direct runner. This main class `SideinputPipeline` will use side input.
   * `make run-local-sideinput`
 
-* Run beam App by direct runner. This main class will use CoGroupByKey.
+* Run beam App by direct runner. This main class `CoGroupByKeyPipeline` will use CoGroupByKey.
   * `make run-local-cogroupbykey`
 
 * Run beam App by Flink runner. This main class will use side input.
