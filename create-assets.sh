@@ -8,3 +8,4 @@ mc alias set local http://127.0.0.1:9000 ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWOR
 mc admin info local
 
 mc mb local/streets-data
+#mc ls local/streets-data

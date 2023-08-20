@@ -10,3 +10,5 @@ source-data/*.xls
 source-data/*.xlsx
 wip/
 .idea/
+file-to-file-beam/target/
+*.iml
