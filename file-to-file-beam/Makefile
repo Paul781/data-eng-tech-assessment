@@ -23,6 +23,6 @@ run-flink-sideinput:
       -Dexec.args="--runner=FlinkRunner \
        --input=/Users/michael_sun/IdeaProjects/data-eng-tech-assessment/source-data/pedestrian \
        --output=/tmp/output \
-       --flinkMaster=http://127.0.0.1:8081 \
+       --flinkMaster=http://127.0.0.1:8083 \
        --filesToStage=target/file-to-file-beam-bundled-0.1.jar"
 
