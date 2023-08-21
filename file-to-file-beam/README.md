@@ -1,6 +1,6 @@
 ### Dependencies on Mac
 * Maven (`brew install maven`)
-* Java 15
+* Java 17 for beam 2.38.0
 
 ### Command Detail
 * Check output
@@ -65,6 +65,7 @@
 - If the json string in the input file does not in the single line like multiple lines, how to handle it?
 - Not only enrich the message by the location name,but also can do something like two direction names with different counts in the same location, how to update the code to implement it? 
 - Have a warn for "Failed to match temporary files"
+- when using the Maven to execute the Beam into flink cluster, the input and output files must in the flink nodes. can not upload from local machine so using minio s3 path is better solution.
 
 
 ```

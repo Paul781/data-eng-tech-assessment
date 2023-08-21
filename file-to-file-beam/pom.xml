@@ -10,8 +10,8 @@
 
   <properties>
     <!-- Dependency properties -->
-    <beam.version>2.49.0</beam.version>
-    <flink.version>2.49.0</flink.version>
+    <beam.version>2.38.0</beam.version>
+    <jackson.version>2.12.4</jackson.version>
     <junit.version>4.12</junit.version>
     <slf4j.version>1.7.25</slf4j.version>
     <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
@@ -38,8 +38,14 @@
     </dependency>
     <dependency>
       <groupId>org.apache.beam</groupId>
-      <artifactId>beam-runners-flink-1.13</artifactId>
+      <artifactId>beam-runners-flink-1.14</artifactId>
       <version>${beam.version}</version>
+    </dependency>
+    <!--  Fix the flink jackson lib conflicts -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.module</groupId>
+      <artifactId>jackson-module-jaxb-annotations</artifactId>
+      <version>${jackson.version}</version>
     </dependency>
     <!--  Gson: Java to JSON conversion -->
     <dependency>
@@ -117,8 +123,6 @@
               <finalName>${project.artifactId}-bundled-${project.version}</finalName>
               <artifactSet>
                 <excludes>
-<!--                  <exclude>com.fasterxml.jackson.core:*</exclude>-->
-                  <exclude>com.fasterxml.jackson.dataformat:*</exclude>
                 </excludes>
               </artifactSet>
               <filters>
@@ -169,7 +173,7 @@
       <dependencies>
         <dependency>
           <groupId>org.apache.beam</groupId>
-          <artifactId>beam-runners-flink-1.13</artifactId>
+          <artifactId>beam-runners-flink-1.14</artifactId>
           <version>${beam.version}</version>
           <scope>runtime</scope>
         </dependency>
