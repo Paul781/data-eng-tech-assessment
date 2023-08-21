@@ -18,6 +18,12 @@
 * Run beam App by Flink runner. This main class will use side input.
   * `make run-flink-sideinput`
 
+* Run beam App by jar. This main class `SideinputPipeline` will use side input.
+  * `make run-jar-sideinput`
+
+* Run beam App by jar. This main class `CoGroupByKeyPipeline` will use CoGroupByKey.
+  * `make run-jar-cogroup`
+
 ### Submission
 1. go to https://github.com/Paul781/data-eng-tech-assessment/tree/develop/file-to-file-beam
 2. switch to develop branch
@@ -58,7 +64,7 @@
 - The format of output file does not matter? must be Json file?
 - If the json string in the input file does not in the single line like multiple lines, how to handle it?
 - Not only enrich the message by the location name,but also can do something like two direction names with different counts in the same location, how to update the code to implement it? 
-
+- Have a warn for "Failed to match temporary files"
 
 
 ```

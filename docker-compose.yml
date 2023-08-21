@@ -138,10 +138,10 @@ services:
       - "8082:8080"
       - "8083:8081" #UI
 
-  flink-worker-1:
+  flink-worker:
     image: bde2020/flink-worker:1.14.5-hadoop3.2
-    hostname: flink-worker-1
-    container_name: flink-worker-1
+    hostname: flink-worker
+    container_name: flink-worker
     networks:
       - beam-network
     environment:
@@ -149,18 +149,6 @@ services:
       - FLINK_NUM_TASK_SLOTS=10
     depends_on:
         - flink-master
-
-  flink-worker-2:
-    image: bde2020/flink-worker:1.14.5-hadoop3.2
-    hostname: flink-worker-2
-    container_name: flink-worker-2
-    networks:
-      - beam-network
-    environment:
-      - FLINK_MASTER_PORT_6123_TCP_ADDR=flink-master
-      - FLINK_NUM_TASK_SLOTS=10
-    depends_on:
-      - flink-master
 
 volumes:
   trino:

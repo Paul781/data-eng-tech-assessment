@@ -26,3 +26,16 @@ run-flink-sideinput:
        --flinkMaster=http://127.0.0.1:8083 \
        --filesToStage=target/file-to-file-beam-bundled-0.1.jar"
 
+run-jar-sideinput:
+	java -cp /Users/michael_sun/IdeaProjects/data-eng-tech-assessment/file-to-file-beam/target/file-to-file-beam-bundled-0.1.jar \
+			com.michael.beam.SideinputPipeline \
+			--runner=DirectRunner \
+			--input=/Users/michael_sun/IdeaProjects/data-eng-tech-assessment/source-data/pedestrian \
+            --output=/Users/michael_sun/IdeaProjects/data-eng-tech-assessment/tmp/output
+
+
+run-jar-cogroup:
+	java -jar /Users/michael_sun/IdeaProjects/data-eng-tech-assessment/file-to-file-beam/target/file-to-file-beam-bundled-0.1.jar \
+			--runner=DirectRunner \
+			--input=/Users/michael_sun/IdeaProjects/data-eng-tech-assessment/source-data/pedestrian \
+            --output=/Users/michael_sun/IdeaProjects/data-eng-tech-assessment/tmp/output
