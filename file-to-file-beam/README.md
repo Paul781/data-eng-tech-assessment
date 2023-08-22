@@ -59,6 +59,11 @@
 
 - `JsonToRow` transform can not deal with the JSON Array with "[" and "]" in the beginning and end
 
+- Each transform should have stable unique name
+
+- The exact parallelism of the write stage can be controlled using withNumShards(int), typically used to control how many files are produced or to globally limit the number of workers connecting to an external service. However, this option can often hurt performance: it adds an additional GroupByKey to the pipeline.
+- A simple technique of logically shuffling the data (partition) to achieve good data parallelism can be applied. for example, Slightly changing the partitioning to improve the distribution by adding hours to the partition key. the more input partitions, the more throughput.
+
 ### Limitations
 - The data in output file should have the same order as the input file (counts-per-hour file)?
 - The format of output file does not matter? must be Json file?
@@ -66,6 +71,7 @@
 - Not only enrich the message by the location name,but also can do something like two direction names with different counts in the same location, how to update the code to implement it? 
 - Have a warn for "Failed to match temporary files"
 - when using the Maven to execute the Beam into flink cluster, the input and output files must in the flink nodes. can not upload from local machine to flink nodes (worker and master) so using minio s3 path is better solution.
+
 
 
 ```

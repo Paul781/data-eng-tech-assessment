@@ -2,6 +2,7 @@ package com.michael.beam;
 
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.io.TextIO;
+import org.apache.beam.sdk.options.Default;
 import org.apache.beam.sdk.options.Description;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.options.Validation;
@@ -113,13 +114,13 @@ public class CoGroupByKeyPipeline {
 
     public interface Options extends PipelineOptions {
         @Description("Path of the file to read from")
-        @Validation.Required
+        @Default.String("/tmp")
         String getInput();
 
         void setInput(String value);
 
         @Description("Path of the file to write to")
-        @Validation.Required
+        @Default.String("/tmp/cogroup/output")
         String getOutput();
 
         void setOutput(String value);
@@ -139,7 +140,7 @@ public class CoGroupByKeyPipeline {
         // Read and parse sensor locations
         PCollection<String> locationData  = p
                     .apply("ReadLocations", TextIO.read().from(options.getInput()+"/pedestrian-counting-system-sensor-locations.json"))
-                    .apply("parse JSON array",ParDo.of(new ParseJsonFn()));
+                    .apply("parse JSON array for location",ParDo.of(new ParseJsonFn()));
 
 
 
@@ -147,15 +148,15 @@ public class CoGroupByKeyPipeline {
         parseResult.getFailedToParseLines().setRowSchema(JsonToRow.JsonToRowWithErrFn.ERROR_ROW_WITH_ERR_MSG_SCHEMA)
                 .apply("invalida json object", ParDo.of(new LogErrorForJsonParseFn()));
 
-        PCollection<SensorLocation> sensorLocations = parseResult.getResults().apply(Convert.fromRows(SensorLocation.class));
+        PCollection<SensorLocation> sensorLocations = parseResult.getResults().apply("Convert to location class", Convert.fromRows(SensorLocation.class));
         PCollection<KV<Integer, String>> locationMap = sensorLocations.apply("Convert to Location Map", ParDo.of(new ParseLocationFn()));
 
         // Read and parse pedestrian data
         PCollection<Pedestrian> pedestrians = p
                     .apply("ReadPedestrian", TextIO.read().from(options.getInput()+"/pedestrian-counting-system-monthly-counts-per-hour.json"))
-                    .apply("parse JSON array",ParDo.of(new ParseJsonFn()))
+                    .apply("parse JSON array for pedestrian",ParDo.of(new ParseJsonFn()))
                     .apply("ParsePedestrian", JsonToRow.withSchema(p.getSchemaRegistry().getSchema(Pedestrian.class)))
-                    .apply(Convert.fromRows(Pedestrian.class));
+                    .apply("Convert to Pedestrian class",Convert.fromRows(Pedestrian.class));
         PCollection<KV<Integer, Pedestrian>> pedestrianMap = pedestrians.apply("Convert to pedestrians Map", ParDo.of(new ParsePedestrianFn()));
 
 
@@ -163,7 +164,7 @@ public class CoGroupByKeyPipeline {
         PCollection<KV<Integer, CoGbkResult>> results =
                 KeyedPCollectionTuple.of(locationTag, locationMap)
                         .and(pedestrianTag, pedestrianMap)
-                        .apply(CoGroupByKey.create());
+                        .apply("co group by key",CoGroupByKey.create());
 
         PCollection<String> enrichedData =
                 results.apply("enrich data",
@@ -171,7 +172,7 @@ public class CoGroupByKeyPipeline {
 
 
         // Write the enriched data
-        enrichedData.apply(TextIO.write().to(options.getOutput()));
+        enrichedData.apply("Write Enriched Data",TextIO.write().to(options.getOutput()));
 //        withoutSharding() & withNumShards(...)
 
         p.run().waitUntilFinish();

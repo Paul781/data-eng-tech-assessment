@@ -22,8 +22,8 @@ run-flink-sideinput:
       -Pflink-runner \
       -Dexec.args="--runner=FlinkRunner \
        --input=/tmp \
-       --output=/tmp/output \
-       --parallelism=3 \
+       --output=/tmp/sideinput/output \
+       --parallelism=2 \
        --flinkMaster=http://127.0.0.1:8083 \
        --filesToStage=target/file-to-file-beam-bundled-0.1.jar"
 
@@ -32,8 +32,8 @@ run-flink-cogroup:
       -Pflink-runner \
       -Dexec.args="--runner=FlinkRunner \
        --input=/tmp \
-       --output=/tmp/output \
-       --parallelism=3 \
+       --output=/tmp/cogroup/output \
+       --parallelism=4 \
        --flinkMaster=http://127.0.0.1:8083 \
        --filesToStage=target/file-to-file-beam-bundled-0.1.jar"
 

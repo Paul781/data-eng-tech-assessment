@@ -132,7 +132,7 @@ public class SideinputPipeline {
         PCollection<String> locationData = p.apply(
                 "Read Location Data", TextIO.read().from(options.getInput()+"/pedestrian-counting-system-sensor-locations.json"))
 //                .withDelimiter(new byte[] {'\n'}
-                .apply("parse JSON array",ParDo.of(new ParseJsonFn()));
+                .apply("parse JSON array for location",ParDo.of(new ParseJsonFn()));
 
 
         // Convert location data to a map for efficient lookup
@@ -141,23 +141,23 @@ public class SideinputPipeline {
             parseResult.getFailedToParseLines().setRowSchema(JsonToRow.JsonToRowWithErrFn.ERROR_ROW_WITH_ERR_MSG_SCHEMA)
                     .apply("invalida json object", ParDo.of(new LogErrorForJsonParseFn()));
 
-            locationMap= parseResult.getResults().apply(Convert.fromRows(SensorLocation.class))
+            locationMap= parseResult.getResults().apply("Convert to location class", Convert.fromRows(SensorLocation.class))
 //                    ParseJsons.of(SensorLocation.class)).setCoder(SerializableCoder.of(SensorLocation.class))
             .apply("Convert to Location Map", ParDo.of(new ParseLocationFn()));
 
 
 
-        final PCollectionView<Map<Integer, String>> locationMapView = locationMap.apply(View.asMap());
+        final PCollectionView<Map<Integer, String>> locationMapView = locationMap.apply("change to map view",View.asMap());
 
         // Enrich pedestrian data with the Location data as side inputs
         PCollection<String> pedestrianData = p.apply(
                 "Read Pedestrian Data", TextIO.read().from(options.getInput()+"/pedestrian-counting-system-monthly-counts-per-hour.json"))
-                        .apply("parse JSON array",ParDo.of(new ParseJsonFn()));
+                        .apply("parse JSON array for pedestrain",ParDo.of(new ParseJsonFn()));
 
         PCollectionTuple enrichedData = null;
             enrichedData = pedestrianData.apply("Parse pedestrian Json file", JsonToRow.withSchema(p.getSchemaRegistry().getSchema(
                     Pedestrian.class)))
-                    .apply(Convert.fromRows(Pedestrian.class))
+                    .apply("Convert to Pedestrian class", Convert.fromRows(Pedestrian.class))
                     .apply("Enrich Data", ParDo.of(new EnrichFn(locationMapView)).withOutputTags(successTag, TupleTagList.of(errorTag))
                     .withSideInputs(locationMapView));
 
