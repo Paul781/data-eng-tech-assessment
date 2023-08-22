@@ -50,70 +50,8 @@ services:
     networks:
       - beam-network      
 
-  trino:
-    image: trinodb/trino:411
-    hostname: trino
-    ports:
-      - "8080:8080"
-    volumes:
-      - ./conf/trino/catalog:/etc/trino/catalog
-    depends_on: 
-      - minio
-      - metastore
-    networks:
-      - beam-network        
-  
-  metastore:
-    image: 'bitsondatadev/hive-metastore:latest'
-    hostname: metastore
-    ports:
-      - '9083:9083'
-    volumes:
-      - ./conf/metastore/metastore-site.xml:/opt/apache-hive-metastore-3.0.0-bin/conf/metastore-site.xml:ro
-    environment:
-      METASTORE_DB_HOSTNAME: mariadb
-    depends_on:
-      - mariadb
-    networks:
-      - beam-network
-
-  mariadb:
-    image: 'mariadb:10.8.2'
-    hostname: mariadb
-    ports:
-      - '3306:3306'
-    environment:
-      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
-      MYSQL_USER: $MYSQL_USER
-      MYSQL_PASSWORD: $MYSQL_PASSWORD
-      MYSQL_DATABASE: $MYSQL_DATABASE
-    networks:
-      - beam-network
-
-  # trino-bootstrap3:
-  #   build: ./cli
-  #   restart: "no" #runs once
-  #   networks:
-  #     - beam-network
-  #   depends_on:
-  #     - trino
 
 ## UI
-  metabase:
-    image: metabase/metabase:v0.45.3
-    ports:
-      - "3000:3000"
-    networks:
-      - beam-network
-    volumes:
-      - ./conf/metabase/plugins:/plugins
-      - ./conf/metabase/data:/metabase-data
-    environment:
-      MB_PLUGINS_DIR: /plugins
-      MB_DB_FILE: /metabase-data/metabase.db
-    depends_on:
-      - trino
-
   minio-console:
     image: minio/console:v0.26.3
     ports:
@@ -132,6 +70,8 @@ services:
     image: bde2020/flink-master:1.14.5-hadoop3.2
     hostname: flink-master
     container_name: flink-master
+    volumes:
+      - /Users/michael_sun/IdeaProjects/data-eng-tech-assessment/source-data/pedestrian:/tmp
     networks:
       - beam-network
     ports:
@@ -142,6 +82,8 @@ services:
     image: bde2020/flink-worker:1.14.5-hadoop3.2
     hostname: flink-worker
     container_name: flink-worker
+    volumes:
+      - /Users/michael_sun/IdeaProjects/data-eng-tech-assessment/source-data/pedestrian:/tmp
     networks:
       - beam-network
     environment:
@@ -151,14 +93,7 @@ services:
         - flink-master
 
 volumes:
-  trino:
-    name: trino
-    driver: local  
-  metastore_conf:
-    driver: local
   minio-data:
     driver: local
-  metabase:
-    driver: local 
   cli:
     driver: local  

@@ -1,4 +1,3 @@
-DOCKER_ID = $(docker ps -q -a)
 TOPIC=test
 ZOOKEEPER=zookeeper:2181
 KAFKA=kafka:9092
@@ -25,7 +24,7 @@ clean:
 	docker volume prune -f
 
 clean-docker:
-	docker rm $(DOCKER_ID)
+	docker rm $$(docker ps -aq)
 
 
 ls-topic:
